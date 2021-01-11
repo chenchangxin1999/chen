@@ -2,23 +2,22 @@ package com.qy25.cn.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.qy25.cn.controller.Base.BaseController;
-import com.qy25.cn.entity.Brand;
+import com.qy25.cn.dto.GoodsFindDto;
 import com.qy25.cn.entity.Category;
+import com.qy25.cn.entity.Goods;
 import com.qy25.cn.http.AxiosResult;
-import com.qy25.cn.service.BrandService;
+import com.qy25.cn.service.GoodsService;
+import com.qy25.cn.service.GoodsService;
 import com.qy25.cn.utill.UploadFile;
 import com.qy25.cn.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,48 +27,59 @@ import java.util.UUID;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("brand")
-public class BrandController extends BaseController {
+@RequestMapping("goods")
+public class GoodsController extends BaseController {
 
     @Autowired
-    private BrandService brandService;
+    private GoodsService goodsService;
 
-    @GetMapping
-    public AxiosResult<PageVo<Brand>> findPage(@RequestParam(defaultValue = "1") int currentPage,
-                                               @RequestParam(defaultValue = "5") int pageSize) {
+    @PostMapping("findAll")
+    public AxiosResult<PageVo<Goods>> findPage(@RequestParam(defaultValue = "1") int currentPage,
+                                               @RequestParam(defaultValue = "5") int pageSize,
+                                               @RequestBody GoodsFindDto entity) {
+       /* PageHelper.startPage(currentPage, pageSize);
+        PageVo<Goods> page = goodsService.findPage();*/
+        System.out.println(pageSize);
+        System.out.println(currentPage);
+        System.out.println(entity);
+        System.out.println("11111111111111111111");
         PageHelper.startPage(currentPage, pageSize);
-        PageVo<Brand> page = brandService.findPage();
-        return AxiosResult.success(page);
-    }
-
-    //没有分页查询
-    @GetMapping("getTreeData")
-    public AxiosResult<List<Brand>> getTreeData() {
-        List<Brand> list = brandService.findAllName();
+        PageVo<Goods> list = goodsService.findAllPage(entity);
         return AxiosResult.success(list);
     }
 
+    /**
+     * 带条件查询！
+     * 前端还没写分页相关
+     *
+     * @param id
+     * @return
+     */
+
+
     @GetMapping("{id}")
-    public AxiosResult<Brand> findById(@PathVariable Long id) {
-        return AxiosResult.success(brandService.findById(id));
+    public AxiosResult<Goods> findById(@PathVariable Long id) {
+        return AxiosResult.success(goodsService.findById(id));
     }
 
     @PostMapping
-    public AxiosResult<Void> addEntity(@RequestBody Brand entity) {
-        int i = brandService.addEntity(entity);
+    public AxiosResult<Void> addEntity(@RequestBody Goods entity) {
+        System.out.println(entity);
+        int i = goodsService.addEntity(entity);
         return toAxios(i);
     }
 
     @PutMapping
-    public AxiosResult<Void> updateEntity(@RequestBody Brand entity) {
-        int i = brandService.updateEntity(entity);
+    public AxiosResult<Void> updateEntity(@RequestBody Goods entity) {
+        int i = goodsService.updateEntity(entity);
         return toAxios(i);
     }
 
     @DeleteMapping("{ids}")
     public AxiosResult<Void> deleteById(@PathVariable List<Long> ids) {
-        return toAxios(brandService.batchDeleteByIds(ids));
+        return toAxios(goodsService.batchDeleteByIds(ids));
     }
+
 
     /**
      * 文件上传
@@ -85,7 +95,7 @@ public class BrandController extends BaseController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String url = "https://chenchangxin.oss-cn-beijing.aliyuncs.com/" + s + ".jpg";
+        String url = "https://chenchangxin.oss-cn-beijing.aliyuncs.com/" + "goods/" + s + ".jpg";
 
         return AxiosResult.success(url);
     }

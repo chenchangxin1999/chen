@@ -4,6 +4,8 @@ import com.qy25.cn.entity.Brand;
 import com.qy25.cn.entity.Category;
 import com.qy25.cn.service.base.BaseService;
 
+import java.util.List;
+
 /**
  * @Author ChenChangXin
  * @Date 2021/1/1 19:53
@@ -11,4 +13,5 @@ import com.qy25.cn.service.base.BaseService;
  */
 public interface CategoryService extends BaseService<Category,Long> {
 
+    List<Category> getTreeData();
 }

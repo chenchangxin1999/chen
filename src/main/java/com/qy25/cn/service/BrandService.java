@@ -13,4 +13,6 @@ import java.util.List;
  */
 public interface BrandService extends BaseService<Brand,Long> {
 
+    List<Brand> findAllName();
+
 }

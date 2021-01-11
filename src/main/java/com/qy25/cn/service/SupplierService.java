@@ -12,4 +12,5 @@ import java.util.List;
  */
 public interface SupplierService extends BaseService<Supplier,Long> {
 
+    List<Supplier> findAll();
 }

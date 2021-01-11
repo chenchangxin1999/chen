@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qy25.cn.mapper.GoodsMapper">
+    <resultMap id="BaseResultMap" type="com.qy25.cn.entity.Goods">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="goods_type" jdbcType="BIGINT" property="goodsType"/>
+        <result column="goods_bazaar_money" jdbcType="DOUBLE" property="goodsBazaarMoney"/>
+        <result column="goods_shopping_money" jdbcType="DOUBLE" property="goodsShoppingMoney"/>
+        <result column="goods_inventory" jdbcType="BIGINT" property="goodsInventory"/>
+        <result column="goods_status" jdbcType="INTEGER" property="goodsStatus"/>
+        <result column="goods_brand" jdbcType="BIGINT" property="goodsBrand"/>
+        <result column="goods_img" jdbcType="VARCHAR" property="goodsImg"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="brand_name" jdbcType="VARCHAR" property="brandName"/>
+        <result column="goods_supplier" jdbcType="BIGINT" property="goodsSupplier"/>
+        <result column="supplier_name" jdbcType="VARCHAR" property="SupplierName"/>
+    </resultMap>
+
+
+    <select id="findAll" parameterType="com.qy25.cn.dto.GoodsFindDto" resultMap="BaseResultMap">
+        SELECT
+        g.id,g.goods_supplier,s.supplier_name,g.goods_name,c.category_name,b.brand_name,g.goods_bazaar_money,g.goods_shopping_money,g.goods_inventory,g.goods_status,goods_img
+        from t_supplier s, t_goods g,t_category c,t_brand b
+        where b.id = g.goods_brand and c.id = g.goods_type and s.id = g.goods_supplier
+        <if test="goodsName != '' and goodsName != null">
+            and goods_name = like CONCAT('%',#{goodsName},'%')
+        </if>
+        <if test="goodsBrand != '' and goodsBrand != null">
+            and goods_brand = #{goodsBrand}
+        </if>
+        <if test="goodsType != '' and goodsType != null">
+            and goods_type = #{goodsType}
+        </if>
+        <if test="goodsBazaarMoney != '' and goodsBazaarMoney != null">
+            and goods_bazaar_money = #{goodsBazaarMoney}
+        </if>
+
+    </select>
+
+    <select id="findTotal" resultType="Long">
+    select count(0) from t_goods ;
+  </select>
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, goods_name, goods_type, goods_bazaar_money, goods_shopping_money, goods_inventory, 
+    goods_status, goods_brand, goods_img
+  </sql>
+    <select id="selectByExample" parameterType="com.qy25.cn.entity.GoodsExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from t_goods
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_goods
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_goods
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.qy25.cn.entity.GoodsExample">
+        delete from t_goods
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.qy25.cn.entity.Goods">
+    insert into t_goods (id, goods_name, goods_type, 
+      goods_bazaar_money, goods_shopping_money, goods_inventory, 
+      goods_status, goods_brand, goods_img
+      )
+    values (#{id,jdbcType=BIGINT}, #{goodsName,jdbcType=VARCHAR}, #{goodsType,jdbcType=BIGINT}, 
+      #{goodsBazaarMoney,jdbcType=DOUBLE}, #{goodsShoppingMoney,jdbcType=DOUBLE}, #{goodsInventory,jdbcType=BIGINT}, 
+      #{goodsStatus,jdbcType=INTEGER}, #{goodsBrand,jdbcType=BIGINT}, #{goodsImg,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.qy25.cn.entity.Goods">
+        insert into t_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="goodsName != null">
+                goods_name,
+            </if>
+            <if test="goodsType != null">
+                goods_type,
+            </if>
+            <if test="goodsBazaarMoney != null">
+                goods_bazaar_money,
+            </if>
+            <if test="goodsShoppingMoney != null">
+                goods_shopping_money,
+            </if>
+            <if test="goodsInventory != null">
+                goods_inventory,
+            </if>
+            <if test="goodsStatus != null">
+                goods_status,
+            </if>
+            <if test="goodsBrand != null">
+                goods_brand,
+            </if>
+            <if test="goodsImg != null">
+                goods_img,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="goodsName != null">
+                #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsType != null">
+                #{goodsType,jdbcType=BIGINT},
+            </if>
+            <if test="goodsBazaarMoney != null">
+                #{goodsBazaarMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="goodsShoppingMoney != null">
+                #{goodsShoppingMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="goodsInventory != null">
+                #{goodsInventory,jdbcType=BIGINT},
+            </if>
+            <if test="goodsStatus != null">
+                #{goodsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="goodsBrand != null">
+                #{goodsBrand,jdbcType=BIGINT},
+            </if>
+            <if test="goodsImg != null">
+                #{goodsImg,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.qy25.cn.entity.GoodsExample" resultType="java.lang.Long">
+        select count(*) from t_goods
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update t_goods
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=BIGINT},
+            </if>
+            <if test="record.goodsName != null">
+                goods_name = #{record.goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.goodsType != null">
+                goods_type = #{record.goodsType,jdbcType=BIGINT},
+            </if>
+            <if test="record.goodsBazaarMoney != null">
+                goods_bazaar_money = #{record.goodsBazaarMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="record.goodsShoppingMoney != null">
+                goods_shopping_money = #{record.goodsShoppingMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="record.goodsInventory != null">
+                goods_inventory = #{record.goodsInventory,jdbcType=BIGINT},
+            </if>
+            <if test="record.goodsStatus != null">
+                goods_status = #{record.goodsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="record.goodsBrand != null">
+                goods_brand = #{record.goodsBrand,jdbcType=BIGINT},
+            </if>
+            <if test="record.goodsImg != null">
+                goods_img = #{record.goodsImg,jdbcType=VARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update t_goods
+        set id = #{record.id,jdbcType=BIGINT},
+        goods_name = #{record.goodsName,jdbcType=VARCHAR},
+        goods_type = #{record.goodsType,jdbcType=BIGINT},
+        goods_bazaar_money = #{record.goodsBazaarMoney,jdbcType=DOUBLE},
+        goods_shopping_money = #{record.goodsShoppingMoney,jdbcType=DOUBLE},
+        goods_inventory = #{record.goodsInventory,jdbcType=BIGINT},
+        goods_status = #{record.goodsStatus,jdbcType=INTEGER},
+        goods_brand = #{record.goodsBrand,jdbcType=BIGINT},
+        goods_img = #{record.goodsImg,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.qy25.cn.entity.Goods">
+        update t_goods
+        <set>
+            <if test="goodsName != null">
+                goods_name = #{goodsName,jdbcType=VARCHAR},
+            </if>
+            <if test="goodsType != null">
+                goods_type = #{goodsType,jdbcType=BIGINT},
+            </if>
+            <if test="goodsBazaarMoney != null">
+                goods_bazaar_money = #{goodsBazaarMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="goodsShoppingMoney != null">
+                goods_shopping_money = #{goodsShoppingMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="goodsInventory != null">
+                goods_inventory = #{goodsInventory,jdbcType=BIGINT},
+            </if>
+            <if test="goodsStatus != null">
+                goods_status = #{goodsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="goodsBrand != null">
+                goods_brand = #{goodsBrand,jdbcType=BIGINT},
+            </if>
+            <if test="goodsImg != null">
+                goods_img = #{goodsImg,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.qy25.cn.entity.Goods">
+    update t_goods
+    set goods_name = #{goodsName,jdbcType=VARCHAR},
+      goods_type = #{goodsType,jdbcType=BIGINT},
+      goods_bazaar_money = #{goodsBazaarMoney,jdbcType=DOUBLE},
+      goods_shopping_money = #{goodsShoppingMoney,jdbcType=DOUBLE},
+      goods_inventory = #{goodsInventory,jdbcType=BIGINT},
+      goods_status = #{goodsStatus,jdbcType=INTEGER},
+      goods_brand = #{goodsBrand,jdbcType=BIGINT},
+      goods_img = #{goodsImg,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

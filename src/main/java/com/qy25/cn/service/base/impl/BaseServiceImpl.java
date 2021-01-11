@@ -3,10 +3,12 @@ package com.qy25.cn.service.base.impl;
 import com.github.pagehelper.PageInfo;
 import com.qy25.cn.mapper.base.BaseMapper;
 import com.qy25.cn.service.base.BaseService;
+import com.qy25.cn.utill.ReflectionUtils;
 import com.qy25.cn.vo.PageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,8 +18,11 @@ import java.util.List;
  */
 public class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
+
+
     @Autowired
     private BaseMapper<T, ID> baseMapper;
+
 
 
     @Override
@@ -37,11 +42,13 @@ public class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
     @Override
     public int updateEntity(T entity) {
+        ReflectionUtils.invokeMethod(entity,"setDate",null,null);
         return baseMapper.updateByPrimaryKey(entity);
     }
 
     @Override
     public int addEntity(T entity) {
+        ReflectionUtils.invokeMethod(entity,"setDate",null,null);
         return baseMapper.insert(entity);
     }
 
@@ -70,7 +77,7 @@ public class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
 
     @Transactional
     @Override
-    public int abatchDeleteByIds(List<ID> ids) {
+    public int batchDeleteByIds(List<ID> ids) {
         ids.forEach(id->{
             baseMapper.deleteByPrimaryKey(id);
         });

@@ -3,6 +3,7 @@ package com.qy25.cn.entity;
 import com.qy25.cn.entity.base.BaseEntity;
 
 import java.util.Date;
+import java.util.List;
 
 public class Category extends BaseEntity {
     private Long id;
@@ -13,6 +14,16 @@ public class Category extends BaseEntity {
 
     private Long oarentId;
 
+    private List<Category> children;
+
+
+    public List<Category> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Category> children) {
+        this.children = children;
+    }
 
     public Long getId() {
         return id;

@@ -5,4 +5,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
+server:
+  port: 9000
 
+logging:
+  file:
+    name: ./project.log
+  level:
+    com:
+      qy25:
+        cn:
+          mapper: debug

@@ -19,4 +19,11 @@ import java.util.List;
 @Transactional//事务
 public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> implements SupplierService {
 
+    @Autowired
+    private SupplierMapper supplierMapper;
+
+    @Override
+    public List<Supplier> findAll() {
+        return supplierMapper.selectByExample(null);
+    }
 }

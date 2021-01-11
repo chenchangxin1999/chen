@@ -10,6 +10,8 @@ import java.util.List;
  * @Version 1.0
  */
 public interface BaseService<T,ID> {
+
+
     /**
      * 分页查询
      */
@@ -53,7 +55,7 @@ public interface BaseService<T,ID> {
     /**
      * 批量删除
      */
-    int abatchDeleteByIds(List<ID> ids);
+    int batchDeleteByIds(List<ID> ids);
 
     /**
      * 封装分页数据
